@@ -1,10 +1,9 @@
 const Router = require("express").Router;
+const { personController } = require("../controllers");
 
 const personRouter = Router();
 
-personRouter.get("/", (req, res) => {
-  res.json("This is the persons page");
-});
+personRouter.get("/", personController.getPersons);
 
 module.exports = {
   personRouter: personRouter,
