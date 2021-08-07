@@ -2,7 +2,7 @@ const db = require("../models");
 
 async function getPersons(req, res, next) {
   try {
-    const persons = await db.Person.find().lean();
+    const persons = await db.Person.find().limit();
 
     res.status(200).send({
       data: persons,
@@ -12,6 +12,61 @@ async function getPersons(req, res, next) {
   }
 }
 
+async function updatePerson(req, res, next) {
+  const { id: personId } = req.params;
+  const { firstName, lastName, roles } = req.body;
+
+  try {
+    const updatedPerson = await db.Person.findOneAndUpdate(
+      {
+        _id: personId,
+      },
+      {
+        $set: {
+          firstName: firstName,
+          lastName: lastName,
+          roles: roles,
+        },
+      },
+      {
+        new: true,
+      },
+    ).select({
+      firstName: 1,
+      lastName: 1,
+      roles: 1,
+    });
+
+    res.status(200).send({
+      data: updatedPerson,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function deletePerson(req, res, next) {
+  const { id: personId } = req.params;
+
+  try {
+    const result = await db.Person.deleteOne({ _id: personId });
+
+    if (result.ok === 1 && result.deletedCount === 1) {
+      res.status(200).send({
+        data: "Person removed",
+      });
+    } else {
+      res.status(500).send({
+        error: "Person not removed",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getPersons: getPersons,
+  updatePerson: updatePerson,
+  deletePerson: deletePerson,
 };
