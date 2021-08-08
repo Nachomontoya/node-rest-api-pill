@@ -12,6 +12,26 @@ async function getPersons(req, res, next) {
   }
 }
 
+async function createPerson(req, res, next) {
+  try {
+    const { firstName, lastName, dateOfBirth, placeOfBirth, roles } = req.body;
+
+    const newPerson = await db.Person.create({
+      firstName: firstName,
+      lastName: lastName,
+      dateOfBirth: dateOfBirth,
+      placeOfBirth: placeOfBirth,
+      roles: roles,
+    });
+
+    res.status(200).send({
+      data: newPerson,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function updatePerson(req, res, next) {
   const { id: personId } = req.params;
 
@@ -54,6 +74,7 @@ async function deletePerson(req, res, next) {
 
 module.exports = {
   getPersons: getPersons,
+  createPerson: createPerson,
   updatePerson: updatePerson,
   deletePerson: deletePerson,
 };
