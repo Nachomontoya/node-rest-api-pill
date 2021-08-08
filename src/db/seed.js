@@ -11,10 +11,6 @@ async function populatePersons() {
 async function populateMovies() {
   const movies = await seedMovies();
 
-  // const persons = await db.Person.find({}).select({_id:1}).lean().exec();
-
-  // const personId = persons.map((person) => {person._id});
-
   await db.Movie.deleteMany({});
   await db.Movie.create([...movies]);
 }

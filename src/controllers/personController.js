@@ -14,28 +14,15 @@ async function getPersons(req, res, next) {
 
 async function updatePerson(req, res, next) {
   const { id: personId } = req.params;
-  const { firstName, lastName, roles } = req.body;
 
   try {
-    const updatedPerson = await db.Person.findOneAndUpdate(
-      {
-        _id: personId,
-      },
-      {
-        $set: {
-          firstName: firstName,
-          lastName: lastName,
-          roles: roles,
-        },
-      },
+    const updatedPerson = await db.Person.findByIdAndUpdate(
+      personId,
+      req.body,
       {
         new: true,
       },
-    ).select({
-      firstName: 1,
-      lastName: 1,
-      roles: 1,
-    });
+    );
 
     res.status(200).send({
       data: updatedPerson,

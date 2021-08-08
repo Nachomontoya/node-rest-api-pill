@@ -19,6 +19,7 @@ app.use(helmet());
 app.use("/movies", movieRouter);
 app.use("/persons", personRouter);
 app.use("/users", userRouter);
+app.use("/auth", authRouter);
 
 app.get("/", function (req, res) {
   res.status(200).send({

@@ -3,15 +3,13 @@ const db = require("../models");
 function seedUsers() {
   return [
     {
-      firstName: "Nacho",
-      lastName: "Montoya",
+      userName: "Nachomontoya",
       email: "mail@mail.com",
       password: "123456",
       isAdmin: true,
     },
     {
-      firstName: "user",
-      lastName: "",
+      userName: "userTest",
       email: "test@test.com",
       password: "123456",
       isAdmin: false,

@@ -1,27 +1,35 @@
 const db = require("../models");
+const { encryptPassword } = require("../utils/encrypt");
+const jwt = require("jsonwebtoken");
+const { config } = require("../config");
 
-// async function signUp(req, res, next) {
-//   const { email, password, firstName, lastName } = req.body;
+async function signUp(req, res, next) {
+  const { userName, email, password, isAdmin } = req.body;
 
-//   try {
-//     const encryptedPassword = await encryptString(password);
-//     const { _id } = await db.User.create({
-//       email: email,
-//       password: encryptedPassword,
-//       firstName: firstName,
-//       lastName: lastName,
-//       isAdmin: true,
-//     });
+  try {
+    const encryptedPassword = await encryptPassword(password);
 
-//     return res.status(200).send({
-//       id: _id,
-//       email,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     next(error);
-//   }
-// }
+    const newUser = await db.User.create({
+      userName: userName,
+      email: email,
+      password: encryptedPassword,
+      isAdmin: isAdmin,
+    });
+
+    const token = jwt.sign({ id: newUser._id }, config.encrypt.token, {
+      expiresIn: 86400,
+    });
+
+    res.status(200).send({
+      data: newUser,
+      token: token,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function signIn(req, res, next) {}
 
 async function getUsers(req, res, next) {
   try {
@@ -37,25 +45,10 @@ async function getUsers(req, res, next) {
 
 async function updateUser(req, res, next) {
   const { id: userId } = req.params;
-  const { firstName, lastName } = req.body;
 
   try {
-    const updatedUser = await db.User.findOneAndUpdate(
-      {
-        _id: userId,
-      },
-      {
-        $set: {
-          firstName: firstName,
-          lastName: lastName,
-        },
-      },
-      {
-        new: true,
-      },
-    ).select({
-      firstName: 1,
-      lastName: 1,
+    const updatedUser = await db.User.findByIdAndUpdate(userId, req.body, {
+      new: true,
     });
 
     res.status(200).send({
@@ -87,6 +80,7 @@ async function deleteUser(req, res, next) {
 }
 
 module.exports = {
+  signUp: signUp,
   getUsers: getUsers,
   updateUser: updateUser,
   deleteUser: deleteUser,

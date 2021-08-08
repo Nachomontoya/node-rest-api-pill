@@ -3,8 +3,10 @@ const { movieController } = require("../controllers");
 
 const movieRouter = Router();
 
+movieRouter.patch("/:movieId", movieController.updateMovie);
+movieRouter.delete("/:movieId", movieController.deleteMovie);
 movieRouter.get("/", movieController.getMovies);
-movieRouter.delete("/:id", movieController.deleteMovie);
+movieRouter.post("/", movieController.createMovie);
 
 module.exports = {
   movieRouter: movieRouter,

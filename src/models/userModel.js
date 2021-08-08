@@ -4,11 +4,9 @@ const { isEmail } = require("validator");
 
 const userSchema = Schema(
   {
-    firstName: {
+    userName: {
       type: String,
-    },
-    lastName: {
-      type: String,
+      required: true,
     },
     email: {
       type: String,

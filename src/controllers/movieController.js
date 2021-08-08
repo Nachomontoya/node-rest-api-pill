@@ -12,41 +12,45 @@ async function getMovies(req, res, next) {
   }
 }
 
-// async function updateMovie(req, res, next) {
-//   const { id: movieId } = req.params;
-//   const { firstName, lastName, roles } = req.body;
+async function createMovie(req, res, next) {
+  try {
+    const { title, releaseYear, genres, duration, cast, crew } = req.body;
 
-//   try {
-//     const updatedPerson = await db.Person.findOneAndUpdate(
-//       {
-//         _id: personId,
-//       },
-//       {
-//         $set: {
-//           firstName: firstName,
-//           lastName: lastName,
-//           roles: roles,
-//         },
-//       },
-//       {
-//         new: true,
-//       },
-//     ).select({
-//       firstName: 1,
-//       lastName: 1,
-//       roles: 1,
-//     });
+    const newMovie = await db.Movie.create({
+      title: title,
+      releaseYear: releaseYear,
+      genres: genres,
+      duration: duration,
+      cast: cast,
+      crew: crew,
+    });
 
-//     res.status(200).send({
-//       data: updatedPerson,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// }
+    res.status(200).send({
+      data: newMovie,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function updateMovie(req, res, next) {
+  const { movieId: movieId } = req.params;
+
+  try {
+    const updatedMovie = await db.Movie.findByIdAndUpdate(movieId, req.body, {
+      new: true,
+    });
+
+    res.status(200).send({
+      data: updatedMovie,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 async function deleteMovie(req, res, next) {
-  const { id: movieId } = req.params;
+  const { movieId: movieId } = req.params;
 
   try {
     const result = await db.Movie.deleteOne({ _id: movieId });
@@ -66,7 +70,8 @@ async function deleteMovie(req, res, next) {
 }
 
 module.exports = {
+  createMovie: createMovie,
   getMovies: getMovies,
-  // updatePerson: updatePerson,
+  updateMovie: updateMovie,
   deleteMovie: deleteMovie,
 };

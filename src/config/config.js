@@ -23,6 +23,7 @@ const CONFIG = {
     },
     encrypt: {
       salt: ENCRYPTION_SALT_PRODUCTION,
+      token: ACCESS_TOKEN_SECRET,
     },
   },
   development: {
@@ -34,6 +35,7 @@ const CONFIG = {
     },
     encrypt: {
       salt: ENCRYPTION_SALT_DEVELOPMENT,
+      token: ACCESS_TOKEN_SECRET,
     },
   },
   test: {
